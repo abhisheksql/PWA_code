@@ -1,0 +1,98 @@
+image: node:22.11
+definitions:
+  services:
+    docker:
+      memory: 4072
+pipelines:
+  branches:
+    UserOnboarding:
+      - step:
+          name: test and build
+          size: 2x
+          caches:
+            - node
+          runs-on:
+            - self.hosted
+            - linux
+          services:
+            - docker
+          script:
+            - export NODE_OPTIONS="--max-old-space-size=5096"
+            - npm ci 
+            - docker build -t $ACR_REGISTRY/web-frontend:v2.0 .
+            - docker login -u $ACR_USERNAME -p $ACR_PASSWORD $ACR_REGISTRY
+            - docker push $ACR_REGISTRY/web-frontend:v2.0
+            - |
+              if [ $? -eq 0 ]; then
+                echo "SUCCESS" > step1_status.txt;
+              else
+                echo "FAILED" > step1_status.txt;
+              fi
+          artifacts:
+            - step1_status.txt
+
+      - step:
+          name: Deploy to Azure VM
+          runs-on:
+            - self.hosted
+            - linux
+          script:
+            - apt-get update && apt-get install -y openssh-client && apt install -y ssh-askpass
+            - pwd
+            - echo "Setting up SSH..."
+            - mkdir -p ~/.ssh
+            - chmod 700 ~/.ssh
+            - echo "4.240.85.66 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ8nOHSyQA/jzt+TiDHg2RObdB3yQVNp0jppnWAKZUeY" >> ~/.ssh/known_hosts
+            - chmod 644 ~/.ssh/known_hosts
+            - ssh-keyscan -t rsa bitbucket.org >> ~/.ssh/known_hosts
+            - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+            - chmod 600 ~/.ssh/id_rsa
+            - eval $(ssh-agent -s)
+            - ssh-add ~/.ssh/id_rsa
+            - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_rsa -tt "$AZURE_VM_USER"@"$AZURE_VM_HOST" 'bash /root/update.sh'
+            - |
+              if [ $? -eq 0 ]; then
+                echo "SUCCESS" > step2_status.txt;
+              else
+                echo "FAILED" > step2_status.txt;
+              fi
+          artifacts:
+            - step2_status.txt
+
+      - step:
+          name: Send 1st Slack Notification
+          script:
+            - echo "Checking statuses..."
+            - STEP1_STATUS=$(cat step1_status.txt || echo "UNKNOWN")
+            - STEP2_STATUS=$(cat step2_status.txt || echo "UNKNOWN")
+            - |
+              echo "Step 1: $STEP1_STATUS"
+            - |
+              echo "Step 2: $STEP2_STATUS"
+            - |
+              if [ "$BITBUCKET_BUILD_STATUS" == "SUCCESSFUL" ]; then
+                STATUS="SUCCESS";
+              else
+                STATUS="FAILED";
+              fi
+              curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Deployment Status for $BITBUCKET_REPO_SLUG branch: main is $STEP2_STATUS.\nDependency-Check: $STEP1_STATUS\nDeployment: $STEP2_STATUS\nDeploy-commit: $BITBUCKET_COMMIT\nURL: https://leap2.acadally.com\"}" $SLACK_WEBHOOK_URL
+      
+      - step:
+          name: Send 2nd Slack Notification
+          script:
+            - echo "Checking statuses..."
+            - STEP1_STATUS=$(cat step1_status.txt || echo "UNKNOWN")
+            - STEP2_STATUS=$(cat step2_status.txt || echo "UNKNOWN")
+            - |
+              echo "Step 1: $STEP1_STATUS"
+            - |
+              echo "Step 2: $STEP2_STATUS"
+            - |
+              if [ "$BITBUCKET_BUILD_STATUS" == "SUCCESSFUL" ]; then
+                STATUS="SUCCESS";
+              else
+                STATUS="FAILED";
+              fi
+              curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Deployment Status for $BITBUCKET_REPO_SLUG branch: main is $STEP2_STATUS.\nDependency-Check: $STEP1_STATUS\nDeployment: $STEP2_STATUS\nDeploy-commit: $BITBUCKET_COMMIT\nURL: https://leap2.acadally.com\"}" $SLACK_WEBHOOK_URL_Acad
+
+# test 

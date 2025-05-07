@@ -1,0 +1,39 @@
+# Stage 1: Install dependencies and build the app
+FROM node:22.14-alpine AS builder
+
+WORKDIR /app
+
+# Set environment variables for Next.js
+ENV NEXT_PUBLIC_LEAP_API_URL=https://api.acadally.com/
+ENV NEXT_PUBLIC_ONBOARDING_API_URL=https://api.acadally.com/
+ENV NEXT_PUBLIC_STUDENT_API_URL=https://api.acadally.com/studentapis
+
+# Copy package files and install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the Next.js app with increased memory limit
+RUN node --max-old-space-size=4096 ./node_modules/.bin/next build --no-lint
+
+# Stage 2: Serve the app using a lightweight image
+FROM node:22.14-alpine
+
+WORKDIR /app
+
+# Copy only necessary files from the builder stage
+COPY --from=builder /app/package.json /app/package-lock.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+
+# Set environment variables for runtimes
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s CMD curl -f http://localhost:3000 || exit 1
+
+CMD ["npm", "start"]
