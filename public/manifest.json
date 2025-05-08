@@ -3,7 +3,7 @@
   "short_name": "Acadally",
   "description": "Acadally Web Application",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
@@ -16,7 +16,6 @@
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-      
     }
   ]
 }
