@@ -3,9 +3,11 @@
   "short_name": "Acadally",
   "description": "Acadally Web Application",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "scope": "/",
   "icons": [
     {
       "src": "/icon-192x192.png",
