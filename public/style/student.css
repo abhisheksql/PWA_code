@@ -1920,150 +1920,6 @@ span mjx-container mjx-math {
     border: 1px solid #3EA8FF;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-mjx-math {
-    white-space: normal !important;
-    text-align: left !important;
-}
-
-mjx-c {
-    margin: 0px 0.5px !important;
-    text-align: left !important;
-}
-
-mjx-mtext {
-    display: inline !important;
-    text-align: left !important;
-}
-
-mjx-c {
-    letter-spacing: 0.1em !important;
-    display: inline-block !important;
-    text-align: left !important;
-}
-
-mjx-container {
-    font-size: 1em !important;
-    line-height: 1.5 !important;
-    text-align: left !important;
-}
-
-
-
-/* ====================================== */
-/* ---------------- Option -------------- */
-/* ====================================== */
-
-
-.option-text {
-    font-size: 16px !important;
-    color: #535353 !important;
-    font-family: "Times New Roman", Times, serif !important;
-}
-
-.option-text span {
-    font-size: 16px !important;
-    color: #535353 !important;
-    font-family: "Times New Roman", Times, serif !important;
-}
-
-.option-text p {
-    margin: 0px;
-    font-size: 16px !important;
-    color: #535353;
-}
-
-.option-card br {
-    display: none;
-}
-
-
-
-/* ======================================= */
-/* -------------- Solution --------------- */
-/* ======================================= */
-
-.question-video {
-    padding: 20px;
-    border: 1px solid #6FCF97;
-    margin: 20px 0;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    font-size: 16px !important;
-    color: #535353 !important;
-    font-family: "Times New Roman", Times, serif !important;
-}
-
-.question-video span {
-    font-size: 16px !important;
-    color: #535353 !important;
-    font-family: "Times New Roman", Times, serif !important;
-}
-
-.question-video  p {
-    margin: 0px;
-    font-size: 16px !important;
-    color: #535353;
-    font-family: "Times New Roman", Times, serif !important;
-}
-
-
-
-
-
-/* ======================================= */
-
-/* =========================== RED OPTION CARD ========================== */
-.booster-red-card {
-    border: 1px solid #E95436;
-    border-bottom: 3px solid #E95436;
-    background-color: #FFB8AA;
-    color: #E95436;
-}
-
-.booster-red-card span.option-label-box {
-    color: #E95436;
-    border: 1px solid #E95436;
-}
-
-.booster-red-card::after {
-    content: "Your Answer";
-    font-weight: bold;
-    position: absolute;
-    right: 95px;
-}
-
-/* =========================== RED OPTION CARD ========================== */
 .red-card {
     border: 1px solid #E95436;
     border-bottom: 3px solid #E95436;
@@ -2648,10 +2504,6 @@ mjx-container {
     background-color: #FF8A00;
 }
 
-.profile-back-arrow img {
-    width: 25px;
-}
-
 .profile-content {
     display: flex;
     flex-direction: row;
@@ -2977,12 +2829,6 @@ mjx-container {
     background-color: #FFF4E6;
     text-align: left;
     border-radius: 10px;
-}
-
-.progressPopupContent h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #666666;
 }
 
 .progressConceptBox {

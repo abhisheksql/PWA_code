@@ -4,8 +4,11 @@
   "description": "Acadally Web Application",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "scope": "/",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-192x192.png",
