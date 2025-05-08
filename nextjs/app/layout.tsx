@@ -19,7 +19,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.variable}>{children}</body>
+      <body className={inter.variable}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (window.matchMedia('(display-mode: standalone)').matches) {
+                document.documentElement.style.display = 'block';
+                document.body.style.display = 'block';
+              }
+              
+              if ('standalone' in window.navigator) {
+                if (window.navigator.standalone) {
+                  document.documentElement.style.display = 'block';
+                  document.body.style.display = 'block';
+                }
+              }
+            `
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
